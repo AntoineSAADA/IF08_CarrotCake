@@ -27,27 +27,44 @@
     <!-- Contenu principal -->
     <main class="container mt-4">
 
+        <section class="mb-4">
+            <div class="ratio ratio-1x1 rounded-4 overflow-hidden mx-auto" style="max-width: 320px;">
+                <div id="recipe-hero" data-hero-fixed="true" class="w-100 h-100 text-white d-flex align-items-end" style="background: linear-gradient(120deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.6)), url('https://assets.afcdn.com/recipe/20221014/136222_w600.jpg'); background-size: cover; background-position: center;">
+                    <div class="p-4 bg-dark bg-opacity-50 w-100">
+                        <h1 class="h2 mb-1">Le Véritable Carrot Cake</h1>
+                        <p class="mb-0">Moelleux, épicé, irrésistible.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Zone recette -->
-        <section class="row">
+        <section class="row g-4">
 
             <div class="col-12">
                 <h2>Recette</h2>
             </div>
 
-            <div class="col-md-6">
-                <h3>Ingrédients</h3>
-
-                <ul id="ingredients-list">
-                    <!-- À compléter -->
-                </ul>
+            <div class="col-lg-5">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="h5">Ingrédients</h3>
+                        <ul id="ingredients-list" class="list-group list-group-flush">
+                            <!-- À compléter -->
+                        </ul>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-6">
-                <h3>Préparation</h3>
-
-                <ol>
-                    <!-- À compléter -->
-                </ol>
+            <div class="col-lg-7">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="h5">Préparation</h3>
+                        <ol class="list-group list-group-numbered list-group-flush">
+                            <!-- À compléter -->
+                        </ol>
+                    </div>
+                </div>
             </div>
 
         </section>
@@ -55,13 +72,13 @@
         <hr>
 
         <!-- Zone API -->
-        <section>
+        <section class="mt-4">
 
             <h2>Informations nutritionnelles</h2>
 
-            <div id="nutriscore-global"></div>
+            <div id="nutriscore-global" class="text-center my-4"></div>
 
-            <div id="ingredients-container" class="row">
+            <div id="ingredients-container" class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
 
                 <!-- Les développeurs JS injecteront ici les données OpenFoodFacts -->
 

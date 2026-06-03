@@ -12,6 +12,7 @@ async function loadDataAndFetch() {
         updateHtml();
         updateProducts();
         updateNutriscoreMoy();
+        updateHeroImage();
     } catch (error) {
         console.error("Erreur lors de l'initialisation :", error);
     }
@@ -25,7 +26,7 @@ async function fetch_open_food_facts(DATA_JSON) {
             const url =
                 "https://world.openfoodfacts.net/api/v2/product/" +
                 code +
-                "?fields=product_name,nutriscore_grade,nutriscore_score,image_front_small_url";
+                "?fields=product_name,nutriscore_grade,nutriscore_score,image_front_small_url,image_front_url";
 
             const response = await fetch(url, { mode: "cors" });
 
@@ -37,6 +38,7 @@ async function fetch_open_food_facts(DATA_JSON) {
 
             let product_name = "";
             let image_front_small_url = "";
+            let image_front_url = "";
             let nutriscore_grade = "Inconnu";
 
             if (data.status === 1) {
@@ -47,6 +49,7 @@ async function fetch_open_food_facts(DATA_JSON) {
                     productData.image_front_small_url ||
                     productData.image_front_url ||
                     "";
+                image_front_url = productData.image_front_url || "";
 
                 nutriscore_grade = productData.nutriscore_grade
                     ? productData.nutriscore_grade.toUpperCase()
@@ -89,6 +92,7 @@ async function fetch_open_food_facts(DATA_JSON) {
             ingredients.push({
                 product_name,
                 image_front_small_url,
+                image_front_url,
                 nutriscore_grade,
             });
 
@@ -98,6 +102,7 @@ async function fetch_open_food_facts(DATA_JSON) {
             ingredients.push({
                 product_name: product.product_name,
                 image_front_small_url: "",
+                image_front_url: "",
                 nutriscore_grade: "Inconnu",
             });
         }
@@ -111,6 +116,7 @@ function updateHtml() {
 
     ingredients.forEach((ingredient) => {
         const li = document.createElement("li");
+        li.className = "list-group-item d-flex justify-content-between align-items-center";
 
         li.innerHTML = `
             ${ingredient.product_name}
@@ -122,26 +128,38 @@ function updateHtml() {
 }
 
 function updateProducts() {
-    const container = document.getElementById("ingredients-list");
+    const container = document.getElementById("ingredients-container");
 
     container.innerHTML = "";
 
     ingredients.forEach((ingredient) => {
         const card = document.createElement("div");
-        card.className = "col-md-4 mb-3";
+        card.className = "col";
+
+        const nutriClass = {
+            A: "bg-success",
+            B: "bg-primary",
+            C: "bg-warning text-dark",
+            D: "bg-danger",
+            E: "bg-dark",
+        }[ingredient.nutriscore_grade] || "bg-secondary";
+
+        const imageHtml = ingredient.image_front_small_url
+            ? `<img
+                    src="${ingredient.image_front_small_url}"
+                    class="card-img-top img-fluid object-fit-contain"
+                    style="height: 160px;"
+                    alt="${ingredient.product_name}"
+                    loading="lazy"
+                >`
+            : "";
 
         card.innerHTML = `
-            <div class="card h-100">
-                <img
-                    src="${ingredient.image_front_small_url}"
-                    class="card-img-top"
-                    alt="${ingredient.product_name}"
-                >
+            <div class="card h-100 shadow-sm">
+                ${imageHtml}
                 <div class="card-body">
-                    <h5 class="card-title">${ingredient.product_name}</h5>
-                    <p class="card-text">
-                        Nutri-score : <strong>${ingredient.nutriscore_grade}</strong>
-                    </p>
+                    <h5 class="card-title mb-2">${ingredient.product_name}</h5>
+                    <span class="badge ${nutriClass}">Nutri-score ${ingredient.nutriscore_grade}</span>
                 </div>
             </div>
         `;
@@ -168,10 +186,28 @@ function updateNutriscoreMoy() {
     }
 
     nutrimoyenElement.innerHTML = `
-        <div class="alert alert-success mb-4">
-            <h4>Nutri-score global : ${nutriMoyenText}</h4>
+        <div class="d-inline-flex align-items-center gap-3 px-4 py-3 rounded-4 bg-success text-white shadow-sm">
+            <div class="fs-5">Nutri-score global</div>
+            <div class="fs-3 fw-bold">${nutriMoyenText}</div>
         </div>
     `;
+}
+
+function updateHeroImage() {
+    const hero = document.getElementById("recipe-hero");
+    if (!hero) {
+        return;
+    }
+
+    if (hero.dataset.heroFixed === "true") {
+        return;
+    }
+
+    const withImage = ingredients.find((item) => item.image_front_url || item.image_front_small_url);
+    if (withImage) {
+        const heroImage = withImage.image_front_url || withImage.image_front_small_url;
+        hero.style.backgroundImage = `linear-gradient(120deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.6)), url('${heroImage}')`;
+    }
 }
 
 loadDataAndFetch();
